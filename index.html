@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/reset.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./styles/styles.css">
+    <title>Cadastro de Pessoas</title>
+    <script src="./js/main.js" defer=""></script>
+</head>
+
+<body>
+
+    <header class="cabeçalho">
+        <div class="container">
+            <input type="checkbox" id="menu" class="container__botao">
+            <label for="menu" class="container__rotulo">
+                <span class="cabeçalho__menu-hamburguer container__imagem"></span>
+            </label>
+            
+            <img src="img/Logo.svg" alt="Logo da Alurabooks" class="container__imagem">
+            <h1 class="container__titulo"><b class="container__titulo--negrito">Modal</b>GR</h1>
+        </div>
+
+
+        <div class="container">
+            <a href="#"><img src="img/Favoritos.svg" alt="Meus favoritos"
+                    class="container__imagem container__imagem-transparente"></a>
+
+            <a href="#" class="container__link">
+                <img src="img/Usuario.svg" alt="Meu perfil" class="container__imagem">
+                <p class="container__texto">Meu perfil</p>
+            </a>
+        </div>
+    </header>
+
+    <section class="banner">
+        <h2 class="banner__titulo">Tela de cadastro</h2>
+    </section>
+
+    <main class="principal">
+        <h2 class="principal__titulo">Cadastro de Pessoas</h2>
+
+        <form class="principal__formulario" id="formulario" target="_blank"
+            onsubmit="location.replace('./cadastro-finalizado.html')">
+            <h3 class="principal__subtitulo">Dados pessoais</h3>
+            <div class="formulario__campo">
+                <label class="campo__etiqueta" for="nome">Nome Completo</label>
+                <input name="nome" id="nome" class="campo__escrita" required />
+            </div>
+            <div class="formulario__dupla">
+                <div class="formulario__campo">
+                    <label class="campo__etiqueta" for="nascimento">Nascimento</label>
+                    <input name="nascimento" id="nascimento" type="date" class="campo__escrita" required />
+                </div>
+                <div class="formulario__campo">
+                    <label class="campo__etiqueta" for="cpf">CPF</label>
+                    <input name="cpf" id="cpf" type="tel" placeholder="000.000.000-00" class="campo__escrita" required />
+                    <span id="cpfErro" style="color: red; display: none;">CPF inválido</span>
+                </div>
+            
+                <script src="cpf.js"></script>
+                
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const cpfInput = document.getElementById("cpf");
+                        const cpfErro = document.getElementById("cpfErro");
+                
+                        cpfInput.addEventListener("input", function () {
+                            this.value = mascaraCPF(this.value);
+                        });
+                
+                        cpfInput.addEventListener("blur", function () {
+                            if (!validarCPF(this.value)) {
+                                cpfErro.style.display = "block";
+                                this.classList.add("campo-invalido");
+                            } else {
+                                cpfErro.style.display = "none";
+                                this.classList.remove("campo-invalido");
+                            }
+                        });
+                
+                        function mascaraCPF(cpf) {
+                            return cpf
+                                .replace(/\D/g, '') // Remove tudo que não é número
+                                .replace(/(\d{3})(\d)/, '$1.$2')
+                                .replace(/(\d{3})(\d)/, '$1.$2')
+                                .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                        }
+                
+                        function validarCPF(cpf) {
+                            cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
+                
+                            if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false; // Verifica tamanho e CPFs inválidos
+                
+                            let soma = 0, resto;
+                
+                            for (let i = 0; i < 9; i++) {
+                                soma += parseInt(cpf.charAt(i)) * (10 - i);
+                            }
+                            resto = (soma * 10) % 11;
+                            if (resto === 10 || resto === 11) resto = 0;
+                            if (resto !== parseInt(cpf.charAt(9))) return false;
+                
+                            soma = 0;
+                            for (let i = 0; i < 10; i++) {
+                                soma += parseInt(cpf.charAt(i)) * (11 - i);
+                            }
+                            resto = (soma * 10) % 11;
+                            if (resto === 10 || resto === 11) resto = 0;
+                            if (resto !== parseInt(cpf.charAt(10))) return false;
+                
+                            return true;
+                        }
+                    });
+                </script>
+                
+                <style>
+                    .campo-invalido {
+                        border: 2px solid red;
+                    }
+                </style>
+                
+
+              
+
+            </div>
+            <div class="formulario__campo">
+                <label class="campo__etiqueta" for="email">E-mail</label>
+                <input name="email" id="email" type="email" class="campo__escrita" required />
+            </div>
+
+            <h3 class="principal__subtitulo">Endereço</h3>
+
+            <div class="formulario__campo">
+                <label class="campo__etiqueta" for="cep">CEP</label>
+                <input name="cep" id="cep" class="campo__escrita" required  data-cep/>
+                <div id="erro"></div>
+            </div>
+
+            <div class="formulario__campo">
+                <label class="campo__etiqueta" for="endereco">Endereço</label>
+                <input name="endereco" id="endereco" class="campo__escrita" required />
+            </div>
+            <div class="formulario__dupla">
+                <div class="formulario__campo">
+                    <label class="campo__etiqueta" for="numero">Numero</label>
+                    <input name="numero" id="numero" class="campo__escrita" required />
+                </div>
+                <div class="formulario__campo">
+                    <label class="campo__etiqueta" for="complemento">Complemento</label>
+                    <input name="complemento" id="complemento" class="campo__escrita" />
+                </div>
+            </div>
+            <div class="formulario__campo">
+                <label class="campo__etiqueta" for="bairro">Bairro</label>
+                <input name="bairro" id="bairro" class="campo__escrita" required />
+            </div>
+            <div class="formulario__dupla">
+                <div class="formulario__campo">
+                    <label class="campo__etiqueta" for="cidade">Cidade</label>
+                    <input name="cidade" id="cidade" class="campo__escrita" required />
+                </div>
+
+                <div class="formulario__campo">
+                    <label class="campo__etiqueta" for="estado">UF</label>
+                    <select id="estado" name="estado" class="campo__escrita">
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                        <option value="EX">Estrangeiro</option>
+                    </select>
+                </div>
+
+            </div>
+
+
+            <input type="submit" value="Enviar formulário" class="formulario__botao" id="enviar">
+        </form>
+    </main>
+
+    <hr>
+    <footer class="rodapé">
+        <h2 class="rodapé__titulo">Copyright ©️ Daniela Rosa</h2>
+        
+        <ul class="lista-rodapé">
+          
+            <li class="lista-rodapé__item">
+                <img src="img/PM3.svg" alt="Logo da PM3">
+                <a href="https://modalgr.io/" class="lista-rodapé__link">ModalGR</a>
+            </li>
+        </ul>
+
+        <ul class="lista-rodapé">
+          
+            <li class="lista-rodapé__item">
+                <img src="img/LayersTech.svg" alt="Logo do Layers ponto Tech">
+                <a href="https://www.linkedin.com/company/modalgr/posts/?feedView=all/" class="lista-rodapé__link">Linkedin</a>
+            </li>
+
+        </ul>
+    </footer>
+
+</body>
+
+</html>
